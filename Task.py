@@ -75,6 +75,22 @@ class Task(User):
         with open('data.json', 'w') as file:
             json.dump(users, file, indent=4)
     
+    def delete_task(self, user_id, task_id):
+        try:
+            users = Task.load_users()
+            for user in users:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        if task["id"] == task_id:
+                            user["tasks"].remove(task)
+                            with open('data.json', 'w') as file:
+                                json.dump(users, file, indent=4)
+                            return True
+        except FileNotFoundError:
+            return []
+        except json.JSONDecodeError:
+            return []
+    
     def edit_task(self, user_id, task_id, new_task_data): 
         try:
             users = Task.load_users()
@@ -93,4 +109,27 @@ class Task(User):
             return []
         except json.JSONDecodeError:
             return []
+        
+    def show_tasks(self, user_id):
+        try:
+            tasks = []
+            data = Task.load_users()
+            for user in data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        user_task = {
+                            "ID": task["id"],
+                            "Title": task["Title"],
+                            "State": task["State"],
+                            "Date": task["Date"],
+                            "Priority": task["Priority"]
+                        }
+                        tasks.append(user_task)
+                    return tasks
+                        
+        except FileNotFoundError:
+            return []
+        except json.JSONDecodeError:
+            return []
+                
     
