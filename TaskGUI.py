@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox, simpledialog
-from tkcalendar import DateEntry  # Import the DateEntry widget
+from tkcalendar import DateEntry  
 from Task import Task
+import matplotlib.pyplot as plt
 
 class TaskGUI:
     id = None
@@ -13,17 +14,17 @@ class TaskGUI:
         
         self.root.configure(bg="#282a36")
         
-        # Creating a frame to hold the task list
+        # Frame to hold the task list
         self.task_frame = ttk.Frame(root)
         self.task_frame.pack(padx=10, pady=10)
 
-        # Creating a treeview widget to display tasks
+        # Treeview widget to display tasks
         self.tree = ttk.Treeview(self.task_frame, columns=("ID", "Title", "State", "Date", "Priority"), show="headings")
-        self.tree.heading("ID", text="ID")
-        self.tree.heading("Title", text="Title")
-        self.tree.heading("State", text="State")
-        self.tree.heading("Date", text="Date")
-        self.tree.heading("Priority", text="Priority")
+        self.tree.heading("ID", text="ID", command=lambda: self.sort_tasks("ID"))
+        self.tree.heading("Title", text="Title", command=lambda: self.sort_tasks("Title"))
+        self.tree.heading("State", text="State", command=lambda: self.sort_tasks("State"))
+        self.tree.heading("Date", text="Date", command=lambda: self.sort_tasks("Date"))
+        self.tree.heading("Priority", text="Priority", command=lambda: self.sort_tasks("Priority"))
         self.tree.pack(fill="both", expand=True)
 
         # Buttons for CRUD functionality
@@ -35,6 +36,10 @@ class TaskGUI:
         
         self.button_delete = tk.Button(root, text="Delete Task", command=self.delete_task, bg="#dc3545", fg="white")
         self.button_delete.pack(side="left", padx=5, pady=5)
+        
+        # Bar graph for task completion
+        self.button_display_graph = tk.Button(root, text="Display Graph", command=self.display_graph_window, bg="#28a745", fg="white")
+        self.button_display_graph.pack(side="left", padx=5, pady=5)
 
         self.populate_tasks()
 
@@ -46,13 +51,12 @@ class TaskGUI:
 
         for task in tasks:
             self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
+
     
     def open_add_task_window(self):
-        # Create a new window for adding a task
         add_task_window = tk.Toplevel(self.root)
         add_task_window.title("Add Task")
 
-        # Create labels and entry fields for task attributes
         label_title = tk.Label(add_task_window, text="Title:")
         label_title.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         entry_title = tk.Entry(add_task_window)
@@ -161,6 +165,17 @@ class TaskGUI:
             self.populate_tasks()
         else:
             messagebox.showinfo("Delete Task", "Please select a task to delete.")
+            
+    
+    def sort_tasks(self, column):
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        tasks = Task(None, None, None, None, None).show_tasks(self.user_id)
+        tasks.sort(key=lambda x: x[column])
+
+    
+        for task in tasks:
+            self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
     def select_date(self, initial_date=None):
         # Create a new window for selecting the date
@@ -168,8 +183,7 @@ class TaskGUI:
         self.date_window.title("Select Date")
         self.cal_date = DateEntry(self.date_window, background='darkblue', foreground='white', borderwidth=2)
         self.cal_date.pack(padx=10, pady=10)
-
-        # Set initial date if provided
+        
         if initial_date:
             self.cal_date.set_date(initial_date)
 
@@ -178,10 +192,30 @@ class TaskGUI:
         button_confirm.pack(pady=5)
 
     def confirm_date(self):
-        # Store the selected date in the instance variable
         self.selected_date = self.cal_date.get()
-        # Destroy the date selection window
         self.date_window.destroy()
+    
+    def display_graph_window(self):
+        graph_window = tk.Toplevel(self.root)
+        graph_window.title("Task Completion Status")
+
+        # Plotting the bar graph
+        tasks = Task(None, None, None, None, None).show_tasks(self.user_id)
+        completion_counts = {"Pending": 0, "In Progress": 0, "Completed": 0}
+        for task in tasks:
+            completion_counts[task["State"]] += 1
+        print(completion_counts)
+
+
+        plt.figure(figsize=(6, 4))
+        plt.bar(completion_counts.keys(), completion_counts.values(), color=["red", "orange", "green"])
+        plt.xlabel("Task State")
+        plt.ylabel("Number of Tasks")
+        plt.title("Task Completion Status")
+        plt.tight_layout()
+        plt.show()
+
+
 
 if __name__ == "__main__":
     user_id = None 
