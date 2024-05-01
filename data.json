@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "first_name": "Cynthia",
+        "last_name": "Nicolas",
+        "username": "icypinks",
+        "password": "megustapatrick",
+        "tasks": []
+    },
+    {
+        "id": 2,
+        "first_name": "Patrick",
+        "last_name": "Solis",
+        "username": "Psolis18",
+        "password": "patrick18",
+        "tasks": [
+            {
+                "id": 1,
+                "Title": "Complete Software Project",
+                "State": "Completed",
+                "Date": "01/05/2024",
+                "Priority": "Low",
+                "user_id": 2
+            },
+            {
+                "id": 2,
+                "Title": "Python Project",
+                "State": "Completed",
+                "Date": "02/05/2024",
+                "Priority": "High",
+                "user_id": 2
+            }
+        ]
+    }
+]
