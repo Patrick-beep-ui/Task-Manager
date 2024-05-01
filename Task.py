@@ -131,5 +131,40 @@ class Task(User):
             return []
         except json.JSONDecodeError:
             return []
-                
     
+    def get_tasks_for_date(self, user_id, date):
+        try:
+            tasks = []
+            data = Task.load_users()
+            for user in data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        if date == task["Date"]:
+                            user_task = {
+                                "ID": task["id"],
+                                "Title": task["Title"],
+                                "State": task["State"],
+                                "Date": task["Date"],
+                                "Priority": task["Priority"]
+                            }
+                            tasks.append(user_task)
+            return tasks  
+        except FileNotFoundError:
+            return []  
+        except json.JSONDecodeError:
+            return []
+                
+    def filter_task(self, user_id, attribute, value):
+        tasks = []
+        data = Task.load_users()
+        for user in data:
+            if user["id"] == user_id:
+                for task in user["tasks"]:
+                    if attribute == "Title" and value.lower() in task["Title"].lower():
+                        tasks.append(task)
+                    elif task.get(attribute) == value:
+                        tasks.append(task)
+        return tasks
+
+
+                    

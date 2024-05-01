@@ -4,6 +4,7 @@ from tkinter import messagebox, simpledialog
 from tkcalendar import DateEntry  
 from Task import Task
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 class TaskGUI:
     id = None
@@ -41,7 +42,35 @@ class TaskGUI:
         self.button_display_graph = tk.Button(root, text="Display Graph", command=self.display_graph_window, bg="#28a745", fg="white")
         self.button_display_graph.pack(side="left", padx=5, pady=5)
 
-        self.populate_tasks()
+        #self.populate_tasks()
+        self.populate_tasks_for_current_day()
+        
+        #Filters
+        self.button_filter = tk.Button(root, text="Filter", command=self.open_filter_window, bg="#28a745", fg="white")
+        self.button_filter.pack(side="left", padx=5, pady=5)
+        self.button_filter_delete = tk.Button(root, text="Delete Filter", command=self.populate_tasks, bg="#dc3545", fg="white")
+        self.button_filter_delete.pack(side="left", padx=5, pady=5)
+        
+        self.button_show_tasks = tk.Button(root, text="See all tasks", command=self.populate_tasks, bg="#bd9319", fg="white")
+        self.button_show_tasks.pack(side="left", padx=5, pady=5)
+
+    def populate_tasks_for_current_day(self):
+        self.clear_tasks()
+
+        current_date = datetime.now().strftime("%d/%m/%Y")
+
+        # Get tasks for the current day
+        tasks = Task(None, None, None, None, None).get_tasks_for_date(self.user_id, current_date)
+
+        self.get_tasks_by_date(tasks)
+    
+    def clear_tasks(self):
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+    
+    def get_tasks_by_date(self, tasks):
+        for task in tasks:
+            self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
     def populate_tasks(self):
         for item in self.tree.get_children():
@@ -177,6 +206,9 @@ class TaskGUI:
         for task in tasks:
             self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
+
+###################### Date ###################
+
     def select_date(self, initial_date=None):
         # Create a new window for selecting the date
         self.date_window = tk.Toplevel(self.root)
@@ -195,6 +227,7 @@ class TaskGUI:
         self.selected_date = self.cal_date.get()
         self.date_window.destroy()
     
+    ################ Graph ################
     def display_graph_window(self):
         graph_window = tk.Toplevel(self.root)
         graph_window.title("Task Completion Status")
@@ -214,6 +247,44 @@ class TaskGUI:
         plt.title("Task Completion Status")
         plt.tight_layout()
         plt.show()
+        
+    ############## Filters ##############
+    def open_filter_window(self):
+        # Create a new window for filtering tasks
+        filter_window = tk.Toplevel(self.root)
+        filter_window.title("Filter Tasks")
+
+        label_attribute = tk.Label(filter_window, text="Attribute:")
+        label_attribute.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        attributes = ["Title", "State", "Date", "Priority"]
+        combobox_attribute = ttk.Combobox(filter_window, values=attributes, state="readonly")
+        combobox_attribute.grid(row=0, column=1, padx=5, pady=5, sticky="we")
+
+        label_value = tk.Label(filter_window, text="Value:")
+        label_value.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        entry_value = tk.Entry(filter_window)
+        entry_value.grid(row=1, column=1, padx=5, pady=5, sticky="we")
+
+        button_filter = tk.Button(filter_window, text="Filter", command=lambda: self.apply_filter(filter_window, combobox_attribute.get(), entry_value.get()), bg="#007bff", fg="white")
+        button_filter.grid(row=2, column=0, columnspan=2, pady=10)
+
+        button_cancel = tk.Button(filter_window, text="Cancel", command=filter_window.destroy, bg="#dc3545", fg="white")
+        button_cancel.grid(row=3, column=0, columnspan=2)
+        
+    def apply_filter(self, window, attribute, value):
+        filtered_tasks = Task(None, None, None, None, None).filter_task(self.user_id, attribute, value)
+        window.destroy()
+        self.update_task_list(filtered_tasks)
+
+
+    def update_task_list(self, tasks):
+        # Clear the treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Insert the filtered tasks into the treeview
+        for task in tasks:
+            self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
 
 
