@@ -1,17 +1,25 @@
-from User import User
-from Task import Task
-from Login import Login
-import json
+#from User import User
+#from Task import Task
+#from Login import Login
+#from SignupGUI import SignupGUI
+import tkinter as tk
+from MainGUI import MainMenuGUI
+#import json
 
 #u = User("Patrick", "Solis", "Psolis18", "patrick18")
-#u.create_file()
+#u.create_user()
+
+root = tk.Tk()
+app = MainMenuGUI(root)
+root.mainloop()
+
 
 #u2 = User("Cynthia", "Nicolas", "icypinks", "12345678")
 #u2.create_file()
 
 #print(u)
 #print(u2)
-
+""" 
 from User import User
 from Task import Task
 from Login import Login
@@ -38,7 +46,6 @@ show = task_instance.show_tasks(user_id)
 print(show)
 
 
-"""
 new_task_data = {
     "Title": "Python Project",
     "State": "Completed",

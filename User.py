@@ -13,7 +13,7 @@ class User:
         self.setPassword(password)
         self.id = self.generate_id(self)
         self.tasks = []
-        self.create_user()
+        #self.create_user()
     
     def setFirstName(self, first_name):
         self.first_name = first_name
@@ -57,6 +57,17 @@ class User:
                 "password": self.password,
                 "tasks": self.tasks
         }
+    
+    def find_user_id_by_username(self, username):
+        try:
+            with open('data.json', 'r') as file:
+                users = json.load(file)
+                for user in users:
+                    if user['username'] == username:
+                        return user['id']
+        except FileNotFoundError:
+            print("Data file not found.")
+        return None
     
     @staticmethod
     def load_users():
