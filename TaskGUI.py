@@ -57,7 +57,7 @@ class TaskGUI:
     def populate_tasks_for_current_day(self):
         self.clear_tasks()
 
-        current_date = datetime.now().strftime("%d/%m/%Y")
+        current_date = datetime.now().strftime("%#m/%#d/%y")
 
         # Get tasks for the current day
         tasks = Task(None, None, None, None, None).get_tasks_for_date(self.user_id, current_date)
