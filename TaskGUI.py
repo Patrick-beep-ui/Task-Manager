@@ -45,7 +45,7 @@ class TaskGUI:
         self.button_display_graph.pack(side="left", padx=5, pady=5)
         
         # Button to display calendar view
-        self.button_calendar_view = tk.Button(root, text="Calendar View", command=self.open_calendar_view_window, bg="#bd9319", fg="white")
+        self.button_calendar_view = tk.Button(root, text="Calendar View", command=lambda: self.open_calendar_view_window(self), bg="#bd9319", fg="white")
         self.button_calendar_view.pack(side="left", padx=5, pady=5)    
 
         #self.populate_tasks()
@@ -82,7 +82,7 @@ class TaskGUI:
     
     def get_tasks_by_date(self, tasks):
         for task in tasks:
-            self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
+            self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
     def populate_tasks(self):
         for item in self.tree.get_children():
@@ -91,7 +91,7 @@ class TaskGUI:
         tasks = Task(None, None, None, None, None).show_tasks(self.user_id)
 
         for task in tasks:
-            self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
+            self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
     
     def open_add_task_window(self):
@@ -217,13 +217,14 @@ class TaskGUI:
 
     
         for task in tasks:
-            self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
+            self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
     
     # Open the calendar View from the CalendarGUI
-    def open_calendar_view_window(self):
+    def open_calendar_view_window(self, task_gui):
         calendar_view_window = tk.Toplevel(self.root)
         calendar_view_window.title("Calendar View")
-        calendar_view = CalendarView(calendar_view_window, self.user_id)
+        calendar_view = CalendarView(calendar_view_window, self.user_id, task_gui)
+
 
 
 ###################### Date ###################
@@ -312,29 +313,25 @@ class TaskGUI:
                 self.task_id = self.tree.item(selected_item)["values"][0]
                 task = Task(None, None, None, None, None)
                 comments = task.show_comments(self.user_id, self.task_id)
-                if comments:
-                    comments_window = tk.Toplevel(self.root)
-                    comments_window.title("Task Comments")
+                comments_window = tk.Toplevel(self.root)
+                comments_window.title("Task Comments")
 
-                    label_comments = tk.Label(comments_window, text="Comments:")
-                    label_comments.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+                label_comments = tk.Label(comments_window, text="Comments:")
+                label_comments.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-                    self.comment_listbox = tk.Listbox(comments_window, width=50)
-                    self.comment_listbox.grid(row=1, column=0, padx=5, pady=5)
-                    self.comment_listbox.bind("<<ListboxSelect>>", self.on_comment_select)
+                self.comment_listbox = tk.Listbox(comments_window, width=50)
+                self.comment_listbox.grid(row=1, column=0, padx=5, pady=5)
+                self.comment_listbox.bind("<<ListboxSelect>>", self.on_comment_select)
 
-                    for comment in comments:
-                        self.comment_listbox.insert(tk.END, comment)
+                for comment in comments:
+                    self.comment_listbox.insert(tk.END, comment)
                     
                     #add comment
-                    self.button_add_comment = tk.Button(comments_window, text="Add Comment", command=self.open_add_comment_window)
-                    self.button_add_comment.grid(row=2, column=0, padx=5, pady=5)
+                self.button_add_comment = tk.Button(comments_window, text="Add Comment", command=self.open_add_comment_window)
+                self.button_add_comment.grid(row=2, column=0, padx=5, pady=5)
                     
-                    self.button_delete_comment = tk.Button(comments_window, text="Delete Comment", command=self.delete_task_comment)
-                    self.button_delete_comment.grid(row=2, column=1, padx=5, pady=5)
-                    
-                else:
-                    messagebox.showinfo("Task Comments", "No comments available for this task.")
+                self.button_delete_comment = tk.Button(comments_window, text="Delete Comment", command=self.delete_task_comment)
+                self.button_delete_comment.grid(row=2, column=1, padx=5, pady=5)
             else:
                 messagebox.showinfo("Task Comments", "Please select a task to view comments.")
     

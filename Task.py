@@ -1,6 +1,6 @@
 import json
 from User import User
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Task(User):
     title = None
@@ -120,7 +120,7 @@ class Task(User):
                 if user["id"] == user_id:
                     for task in user["tasks"]:
                         user_task = {
-                            "ID": task["id"],
+                            "id": task["id"],
                             "Title": task["Title"],
                             "State": task["State"],
                             "Date": task["Date"],
@@ -143,7 +143,33 @@ class Task(User):
                     for task in user["tasks"]:
                         if date == task["Date"]:
                             user_task = {
-                                "ID": task["id"],
+                                "id": task["id"],
+                                "Title": task["Title"],
+                                "State": task["State"],
+                                "Date": task["Date"],
+                                "Priority": task["Priority"]
+                            }
+                            tasks.append(user_task)
+            return tasks  
+        except FileNotFoundError:
+            return []  
+        except json.JSONDecodeError:
+            return []
+    
+    def get_tasks_for_week(self, user_id, start_date, end_date):
+        try:
+            tasks = []
+            data = Task.load_users()
+
+            for user in data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        task_date = datetime.strptime(task["Date"], "%m/%d/%y")
+                        start_week = datetime.strptime(start_date, "%m/%d/%y")
+                        end_week = datetime.strptime(end_date, "%m/%d/%y")
+                        if start_week <= task_date <= end_week:
+                            user_task = {
+                                "id": task["id"],
                                 "Title": task["Title"],
                                 "State": task["State"],
                                 "Date": task["Date"],
@@ -167,7 +193,7 @@ class Task(User):
                         task_date = task["Date"]
                         if start_date <= task_date <= end_date:
                             user_task = {
-                                "ID": task["id"],
+                                "id": task["id"],
                                 "Title": task["Title"],
                                 "State": task["State"],
                                 "Date": task["Date"],

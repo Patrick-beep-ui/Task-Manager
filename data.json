@@ -27,7 +27,7 @@
                 "id": 1,
                 "Title": "Complete Software Project",
                 "State": "Completed",
-                "Date": "01/05/2024",
+                "Date": "4/29/24",
                 "Priority": "Low",
                 "user_id": 2,
                 "comments": [
@@ -35,19 +35,18 @@
                     "Tutoring System",
                     "We did excellent in the presentation",
                     "It was a very beautiful project",
-                    "I love OOP"
+                    "I love Luis Saravia",
+                    "I love Luis Soto"
                 ]
             },
             {
                 "id": 2,
                 "Title": "Python Project",
                 "State": "Completed",
-                "Date": "02/05/2024",
-                "Priority": "Medium",
+                "Date": "5/2/24",
+                "Priority": "High",
                 "user_id": 2,
-                "comments": [
-                    "This Project is absurd"
-                ]
+                "comments": []
             },
             {
                 "id": 4,
@@ -71,15 +70,10 @@
                 "State": "Completed",
                 "Date": "5/1/24",
                 "Priority": "Medium",
-                "user_id": 2
-            },
-            {
-                "id": 11,
-                "Title": "Test Calendar",
-                "State": "In Progress",
-                "Date": "5/30/24",
-                "Priority": "High",
-                "user_id": 2
+                "user_id": 2,
+                "comments": [
+                    "Si"
+                ]
             }
         ]
     },
@@ -129,6 +123,39 @@
                 "Date": "5/2/24",
                 "Priority": "High",
                 "user_id": 5
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "first_name": "Luis",
+        "last_name": "Saravia",
+        "username": "Sarav",
+        "password": "123",
+        "tasks": []
+    },
+    {
+        "id": 7,
+        "first_name": "lit1",
+        "last_name": "lit2",
+        "username": "lut",
+        "password": "123",
+        "tasks": [
+            {
+                "id": 12,
+                "Title": "Dormir",
+                "State": "Pending",
+                "Date": "5/6/24",
+                "Priority": "Normal",
+                "user_id": 7
+            },
+            {
+                "id": 13,
+                "Title": "Web Project",
+                "State": "Pending",
+                "Date": "5/5/24",
+                "Priority": "High",
+                "user_id": 7
             }
         ]
     }

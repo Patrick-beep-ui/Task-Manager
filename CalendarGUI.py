@@ -1,13 +1,13 @@
 import tkinter as tk
-from tkcalendar import Calendar, DateEntry
+from tkcalendar import DateEntry
 from Task import Task
 from datetime import datetime, timedelta
-from tkinter import messagebox
 
 class CalendarView:
-    def __init__(self, root, user_id):
+    def __init__(self, root, user_id, task_gui):
         self.root = root
         self.user_id = user_id
+        self.task_gui = task_gui
         
         self.cal_date = DateEntry(root, background='darkblue', foreground='white', borderwidth=2)
         self.cal_date.pack(padx=10, pady=10)
@@ -29,12 +29,12 @@ class CalendarView:
         formatted_date = datetime.strptime(selected_date, "%m/%d/%y").strftime("%#m/%#d/%y")
         
         tasks = Task(None, None, None, None, None).get_tasks_for_date(self.user_id, formatted_date)
-        self.show_task_info(tasks, formatted_date)
-        
+        self.task_gui.update_task_list(tasks)
+
     def show_tasks_for_today(self):
         today = datetime.today().strftime("%#m/%#d/%y")
         tasks = Task(None, None, None, None, None).get_tasks_for_date(self.user_id, today)
-        self.show_task_info(tasks, "Today")
+        self.task_gui.update_task_list(tasks)
 
     def show_tasks_for_current_week(self):
         today = datetime.today()
@@ -42,15 +42,13 @@ class CalendarView:
         end_of_week = start_of_week + timedelta(days=6)
         
         start_formatted = start_of_week.strftime("%#m/%#d/%y")
-        end_formatted = end_of_week.strftime("%#m/%#d/%y")
+        end_formatted = end_of_week.strftime("%#m/%#d/%#y")
         
         print("start_date:", start_formatted)
-        
         print("end_date:", end_formatted)
         
-        tasks = Task(None, None, None, None, None).get_tasks_for_period(self.user_id, start_formatted, end_formatted)
-        
-        self.show_task_info(tasks, f"This Week ({start_formatted} - {end_formatted})")
+        tasks = Task(None, None, None, None, None).get_tasks_for_week(self.user_id, start_formatted, end_formatted)
+        self.task_gui.update_task_list(tasks)
 
     def show_tasks_for_current_month(self):
         today = datetime.today()
@@ -61,8 +59,12 @@ class CalendarView:
         start_formatted = start_of_month.strftime("%#m/%#d/%y")
         end_formatted = end_of_month.strftime("%#m/%#d/%y")
         
+        print("Month start_date:", start_formatted)
+        print("Month end_date:", end_formatted)
+        
         tasks = Task(None, None, None, None, None).get_tasks_for_period(self.user_id, start_formatted, end_formatted)
-        self.show_task_info(tasks, f"This Month ({start_formatted} - {end_formatted})")
+        self.task_gui.update_task_list(tasks)
+
         
     def show_task_info(self, tasks, title):
         task_info_window = tk.Toplevel(self.root)
