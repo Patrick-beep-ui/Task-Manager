@@ -7,12 +7,13 @@ class Task(User):
     date = None
     priority = None
     
-    def __init__(self, title, state, date, priority, user_id):
+    def __init__(self, title, state, date, priority, user_id, comments=None):
         self.setTitle(title)
         self.setState(state)
         self.setDate(date)
         self.setPriority(priority)
         self.user_id = user_id
+        self.comments = comments if comments is not None else []
         self.id = self.generate_id(self)
         #self.create_task()
         
@@ -56,7 +57,7 @@ class Task(User):
             "State": self.state,
             "Date": self.date,
             "Priority": self.priority,
-            "user_id": self.user_id
+            "user_id": self.user_id,
         }
         
     def create_task(self):
@@ -165,6 +166,42 @@ class Task(User):
                     elif task.get(attribute) == value:
                         tasks.append(task)
         return tasks
+    
+    # Comments Functionality
+    
+    def get_comments(self):
+        return self.comments
 
+    def show_comments(self, user_id, task_id):
+        try:
+            comments = []
+            task_data = Task.load_users()
+            for user in task_data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        if task["id"] == task_id:
+                            comments = task.get("comments", [])
+                            return comments  
+            return comments  
+        except FileNotFoundError:
+            return []
+        except json.JSONDecodeError:
+            return []
 
-                    
+        
+    def add_comment(self, user_id, task_id, comment):
+        data = Task.load_users()
+        for user in data:
+            if user["id"] == user_id:
+                for task in user["tasks"]:
+                    if task["id"] == task_id:
+                        if "comments" in task:
+                            task["comments"].append(comment)
+                        else:
+                            task["comments"] = [comment]
+                        
+                        with open('data.json', 'w') as file:
+                            json.dump(data, file, indent=4)
+                        return
+
+            

@@ -12,6 +12,7 @@ class TaskGUI:
         self.root = root
         self.root.title("Task Manager")
         self.user_id = user_id
+        self.task_id = None
         
         self.root.configure(bg="#282a36")
         
@@ -53,6 +54,12 @@ class TaskGUI:
         
         self.button_show_tasks = tk.Button(root, text="See all tasks", command=self.populate_tasks, bg="#bd9319", fg="white")
         self.button_show_tasks.pack(side="left", padx=5, pady=5)
+        
+        #Comments
+        self.button_show_comments = tk.Button(root, text="Show Comments", command=self.open_comments_window, bg="#bd9319", fg="white")
+        self.button_show_comments.pack(side="left", padx=5, pady=5)
+        
+        self.comment_listbox = tk.Listbox()
 
     def populate_tasks_for_current_day(self):
         self.clear_tasks()
@@ -156,7 +163,7 @@ class TaskGUI:
             label_priority.grid(row=3, column=0, padx=5, pady=5, sticky="w")
             entry_priority = ttk.Combobox(edit_task_window, values=["Normal", "Medium", "High"], state="readonly")
             entry_priority.grid(row=3, column=1, padx=5, pady=5, sticky="we")
-            entry_priority.insert(0, task_details[3])  
+            entry_priority.insert(0, task_details[3])
 
             # Create Update and Cancel buttons
             button_update = tk.Button(edit_task_window, text="Update", command=lambda: self.update_task(edit_task_window, task_id, entry_title.get(), entry_state.get(), cal_date.get(), entry_priority.get()), bg="#007bff", fg="white")
@@ -164,6 +171,7 @@ class TaskGUI:
 
             button_cancel = tk.Button(edit_task_window, text="Cancel", command=edit_task_window.destroy, bg="#dc3545", fg="white")
             button_cancel.grid(row=5, column=0, columnspan=2)
+            
         else:
             messagebox.showinfo("Edit Task", "Please select a task to edit.")
         
@@ -285,6 +293,60 @@ class TaskGUI:
         # Insert the filtered tasks into the treeview
         for task in tasks:
             self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
+            
+    ############## Comments ###############
+    def open_comments_window(self):
+            selected_item = self.tree.selection()
+            if selected_item:
+                self.task_id = self.tree.item(selected_item)["values"][0]
+                task = Task(None, None, None, None, None)
+                comments = task.show_comments(self.user_id, self.task_id)
+                if comments:
+                    comments_window = tk.Toplevel(self.root)
+                    comments_window.title("Task Comments")
+
+                    label_comments = tk.Label(comments_window, text="Comments:")
+                    label_comments.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+                    self.comment_listbox = tk.Listbox(comments_window, width=50)
+                    self.comment_listbox.grid(row=1, column=0, padx=5, pady=5)
+
+                    for comment in comments:
+                        self.comment_listbox.insert(tk.END, comment)
+                    
+                    #add comment
+                    self.button_add_comment = tk.Button(comments_window, text="Add Comment", command=self.open_add_comment_window)
+                    self.button_add_comment.grid(row=2, column=0, padx=5, pady=5)
+                    
+                else:
+                    messagebox.showinfo("Task Comments", "No comments available for this task.")
+            else:
+                messagebox.showinfo("Task Comments", "Please select a task to view comments.")
+    
+    def open_add_comment_window(self):
+        add_comment_window = tk.Toplevel(self.root)
+        add_comment_window.title("Add Comment")
+
+        label_comment = tk.Label(add_comment_window, text="Comment:")
+        label_comment.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+        self.entry_comment = tk.Entry(add_comment_window, width=50)
+        self.entry_comment.grid(row=0, column=1, padx=5, pady=5)
+
+        button_confirm = tk.Button(add_comment_window, text="Confirm", command=self.add_comment_to_task, bg="#007bff", fg="white")
+        button_confirm.grid(row=1, column=0, padx=5, pady=5)
+
+        button_cancel = tk.Button(add_comment_window, text="Cancel", command=add_comment_window.destroy, bg="#dc3545", fg="white")
+        button_cancel.grid(row=1, column=1, padx=5, pady=5)
+
+    def add_comment_to_task(self):
+        comment_text = self.entry_comment.get()
+        if comment_text:
+            task = Task(None, None, None, None, None)
+            task.add_comment(self.user_id, self.task_id, comment_text)
+            self.comment_listbox.insert(tk.END, comment_text)
+        else:
+            messagebox.showinfo("Add Comment", "Please enter a comment.")
 
 
 

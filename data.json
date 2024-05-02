@@ -29,36 +29,48 @@
                 "State": "Completed",
                 "Date": "01/05/2024",
                 "Priority": "Low",
-                "user_id": 2
+                "user_id": 2,
+                "comments": [
+                    "This was done in 1 day",
+                    "Tutoring System",
+                    "We did excellent in the presentation",
+                    "It was a very beautiful project",
+                    "Testing Comment",
+                    "test comment 2",
+                    "Hola"
+                ]
             },
             {
                 "id": 2,
                 "Title": "Python Project",
-                "State": "In Progress",
+                "State": "Completed",
                 "Date": "02/05/2024",
                 "Priority": "Medium",
-                "user_id": 2
+                "user_id": 2,
+                "comments": [
+                    "This Project is absurd"
+                ]
             },
             {
                 "id": 4,
                 "Title": "TestEdited",
-                "State": "Pending",
+                "State": "Completed",
                 "Date": "5/23/24",
                 "Priority": "Medium",
                 "user_id": 2
             },
             {
-                "id": 5,
-                "Title": "TestTask",
+                "id": 6,
+                "Title": "Edit Task",
                 "State": "Completed",
                 "Date": "5/1/24",
-                "Priority": "Medium",
+                "Priority": "High",
                 "user_id": 2
             },
             {
-                "id": 6,
-                "Title": "a",
-                "State": "In Progress",
+                "id": 7,
+                "Title": "Show Graph",
+                "State": "Completed",
                 "Date": "5/1/24",
                 "Priority": "Medium",
                 "user_id": 2
@@ -80,5 +92,38 @@
         "username": "Rsolis12",
         "password": "changay12",
         "tasks": []
+    },
+    {
+        "id": 5,
+        "first_name": "Cynthia",
+        "last_name": "West",
+        "username": "icywest",
+        "password": "12345lol",
+        "tasks": [
+            {
+                "id": 8,
+                "Title": "Create Cynthia User",
+                "State": "Completed",
+                "Date": "5/1/24",
+                "Priority": "High",
+                "user_id": 5
+            },
+            {
+                "id": 9,
+                "Title": "Edit Cynthia User",
+                "State": "In Progress",
+                "Date": "5/1/24",
+                "Priority": "Medium",
+                "user_id": 5
+            },
+            {
+                "id": 10,
+                "Title": "Deliver Python Project",
+                "State": "In Progress",
+                "Date": "5/2/24",
+                "Priority": "High",
+                "user_id": 5
+            }
+        ]
     }
 ]
