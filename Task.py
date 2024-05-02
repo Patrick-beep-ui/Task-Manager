@@ -1,5 +1,6 @@
 import json
 from User import User
+from datetime import datetime
 
 class Task(User):
     title = None
@@ -154,6 +155,31 @@ class Task(User):
             return []  
         except json.JSONDecodeError:
             return []
+        
+    def get_tasks_for_period(self, user_id, start_date, end_date):
+        try:
+            tasks = []
+            data = Task.load_users()
+
+            for user in data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        task_date = task["Date"]
+                        if start_date <= task_date <= end_date:
+                            user_task = {
+                                "ID": task["id"],
+                                "Title": task["Title"],
+                                "State": task["State"],
+                                "Date": task["Date"],
+                                "Priority": task["Priority"]
+                            }
+                            tasks.append(user_task)
+            return tasks  
+        except FileNotFoundError:
+            return []  
+        except json.JSONDecodeError:
+            return []
+    
                 
     def filter_task(self, user_id, attribute, value):
         tasks = []

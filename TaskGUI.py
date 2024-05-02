@@ -5,6 +5,7 @@ from tkcalendar import DateEntry
 from Task import Task
 import matplotlib.pyplot as plt
 from datetime import datetime
+from CalendarGUI import CalendarView
 
 class TaskGUI:
     id = None
@@ -42,6 +43,10 @@ class TaskGUI:
         # Bar graph for task completion
         self.button_display_graph = tk.Button(root, text="Display Graph", command=self.display_graph_window, bg="#28a745", fg="white")
         self.button_display_graph.pack(side="left", padx=5, pady=5)
+        
+        # Button to display calendar view
+        self.button_calendar_view = tk.Button(root, text="Calendar View", command=self.open_calendar_view_window, bg="#bd9319", fg="white")
+        self.button_calendar_view.pack(side="left", padx=5, pady=5)    
 
         #self.populate_tasks()
         self.populate_tasks_for_current_day()
@@ -213,6 +218,12 @@ class TaskGUI:
     
         for task in tasks:
             self.tree.insert("", "end", values=(task["ID"], task["Title"], task["State"], task["Date"], task["Priority"]))
+    
+    # Open the calendar View from the CalendarGUI
+    def open_calendar_view_window(self):
+        calendar_view_window = tk.Toplevel(self.root)
+        calendar_view_window.title("Calendar View")
+        calendar_view = CalendarView(calendar_view_window, self.user_id)
 
 
 ###################### Date ###################
@@ -343,6 +354,7 @@ class TaskGUI:
         button_cancel = tk.Button(add_comment_window, text="Cancel", command=add_comment_window.destroy, bg="#dc3545", fg="white")
         button_cancel.grid(row=1, column=1, padx=5, pady=5)
         
+     # Get the selected comment content    
     def on_comment_select(self, event):
         selected_index = self.comment_listbox.curselection()
         if selected_index:
