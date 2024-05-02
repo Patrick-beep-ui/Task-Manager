@@ -48,7 +48,6 @@ class TaskGUI:
         self.button_calendar_view = tk.Button(root, text="Calendar View", command=lambda: self.open_calendar_view_window(self), bg="#bd9319", fg="white")
         self.button_calendar_view.pack(side="left", padx=5, pady=5)    
 
-        #self.populate_tasks()
         self.populate_tasks_for_current_day()
         
         #Filters
@@ -66,6 +65,7 @@ class TaskGUI:
         
         self.comment_listbox = tk.Listbox()
 
+
     def populate_tasks_for_current_day(self):
         self.clear_tasks()
 
@@ -76,6 +76,7 @@ class TaskGUI:
 
         self.get_tasks_by_date(tasks)
     
+    # Reset the tree for upcoming updates
     def clear_tasks(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -84,6 +85,7 @@ class TaskGUI:
         for task in tasks:
             self.tree.insert("", "end", values=(task["id"], task["Title"], task["State"], task["Date"], task["Priority"]))
 
+    # Display all tasks
     def populate_tasks(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -239,7 +241,6 @@ class TaskGUI:
         if initial_date:
             self.cal_date.set_date(initial_date)
 
-        # button to confirm the date selection
         button_confirm = tk.Button(self.date_window, text="Confirm", command=self.confirm_date, bg="#007bff", fg="white")
         button_confirm.pack(pady=5)
 
@@ -270,7 +271,6 @@ class TaskGUI:
         
     ############## Filters ##############
     def open_filter_window(self):
-        # Create a new window for filtering tasks
         filter_window = tk.Toplevel(self.root)
         filter_window.title("Filter Tasks")
 
@@ -285,12 +285,13 @@ class TaskGUI:
         entry_value = tk.Entry(filter_window)
         entry_value.grid(row=1, column=1, padx=5, pady=5, sticky="we")
 
+        # Buttons to perform filtering
         button_filter = tk.Button(filter_window, text="Filter", command=lambda: self.apply_filter(filter_window, combobox_attribute.get(), entry_value.get()), bg="#007bff", fg="white")
         button_filter.grid(row=2, column=0, columnspan=2, pady=10)
 
         button_cancel = tk.Button(filter_window, text="Cancel", command=filter_window.destroy, bg="#dc3545", fg="white")
         button_cancel.grid(row=3, column=0, columnspan=2)
-        
+    
     def apply_filter(self, window, attribute, value):
         filtered_tasks = Task(None, None, None, None, None).filter_task(self.user_id, attribute, value)
         window.destroy()
@@ -326,7 +327,7 @@ class TaskGUI:
                 for comment in comments:
                     self.comment_listbox.insert(tk.END, comment)
                     
-                    #add comment
+                #add comment
                 self.button_add_comment = tk.Button(comments_window, text="Add Comment", command=self.open_add_comment_window)
                 self.button_add_comment.grid(row=2, column=0, padx=5, pady=5)
                     

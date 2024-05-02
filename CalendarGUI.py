@@ -65,18 +65,6 @@ class CalendarView:
         tasks = Task(None, None, None, None, None).get_tasks_for_period(self.user_id, start_formatted, end_formatted)
         self.task_gui.update_task_list(tasks)
 
-        
-    def show_task_info(self, tasks, title):
-        task_info_window = tk.Toplevel(self.root)
-        task_info_window.title(f"Tasks for {title}")
-        
-        if tasks:
-            task_details = "\n".join([f"- {task['Title']}" for task in tasks])
-            label_tasks = tk.Label(task_info_window, text=f"Tasks for {title}:\n{task_details}")
-            label_tasks.pack(padx=10, pady=10)
-        else:
-            label_no_tasks = tk.Label(task_info_window, text="No tasks scheduled for this period.")
-            label_no_tasks.pack(padx=10, pady=10)
 
 if __name__ == "__main__":
     user_id = None 
