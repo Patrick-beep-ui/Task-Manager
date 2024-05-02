@@ -203,5 +203,25 @@ class Task(User):
                         with open('data.json', 'w') as file:
                             json.dump(data, file, indent=4)
                         return
-
-            
+                    
+                    
+    def delete_comment(self, user_id, task_id, comment):
+            data = Task.load_users()
+            for user in data:
+                if user["id"] == user_id:
+                    for task in user["tasks"]:
+                        if task["id"] == task_id:
+                            if "comments" in task:
+                                if comment in task["comments"]:
+                                    task["comments"].remove(comment)
+                                    with open('data.json', 'w') as file:
+                                        json.dump(data, file, indent=4)
+                                    return True
+                                else:
+                                    print("Comment not found")
+                                    return False  
+                            else:
+                                print("No comments for this task")
+                                return False  
+            print("User or task not found")
+            return False  

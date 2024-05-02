@@ -310,6 +310,7 @@ class TaskGUI:
 
                     self.comment_listbox = tk.Listbox(comments_window, width=50)
                     self.comment_listbox.grid(row=1, column=0, padx=5, pady=5)
+                    self.comment_listbox.bind("<<ListboxSelect>>", self.on_comment_select)
 
                     for comment in comments:
                         self.comment_listbox.insert(tk.END, comment)
@@ -317,6 +318,9 @@ class TaskGUI:
                     #add comment
                     self.button_add_comment = tk.Button(comments_window, text="Add Comment", command=self.open_add_comment_window)
                     self.button_add_comment.grid(row=2, column=0, padx=5, pady=5)
+                    
+                    self.button_delete_comment = tk.Button(comments_window, text="Delete Comment", command=self.delete_task_comment)
+                    self.button_delete_comment.grid(row=2, column=1, padx=5, pady=5)
                     
                 else:
                     messagebox.showinfo("Task Comments", "No comments available for this task.")
@@ -338,6 +342,14 @@ class TaskGUI:
 
         button_cancel = tk.Button(add_comment_window, text="Cancel", command=add_comment_window.destroy, bg="#dc3545", fg="white")
         button_cancel.grid(row=1, column=1, padx=5, pady=5)
+        
+    def on_comment_select(self, event):
+        selected_index = self.comment_listbox.curselection()
+        if selected_index:
+            selected_comment = self.comment_listbox.get(selected_index)
+            self.selected_comment = selected_comment 
+        else:
+            self.selected_comment = None
 
     def add_comment_to_task(self):
         comment_text = self.entry_comment.get()
@@ -348,6 +360,14 @@ class TaskGUI:
         else:
             messagebox.showinfo("Add Comment", "Please enter a comment.")
 
+    def delete_task_comment(self):
+        if self.selected_comment:
+            task = Task(None, None, None, None, None)
+            task.delete_comment(self.user_id, self.task_id, self.selected_comment)
+            self.comment_listbox.delete(self.comment_listbox.curselection())
+            messagebox.showwarning("Delete Comment", "Comment deleted successfully")
+        else:
+            messagebox.showinfo("Add Comment", "Please enter a comment.")
 
 
 if __name__ == "__main__":

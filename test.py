@@ -9,10 +9,11 @@ value = "Completed"
 
 task = Task("Complete Software Project", "Completed", "01/05/2024", "Low", 2)
 comments = task.show_comments(2, 1)
-print(comments)
+#print(comments)
 
-task.add_comment(2, 2, "This Project is absurd")
+#task.add_comment(2, 2, "This Project is absurd")
 
+task.delete_comment(2,1, "Hola")
 
 current_date = datetime.now().strftime("%#m/%#d/%y")
 print(current_date)
